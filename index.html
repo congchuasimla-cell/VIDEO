@@ -1,0 +1,84 @@
+from manim import *
+
+class VectorDefinition(Scene):
+    def construct(self):
+        # Cấu hình nền tối hiện đại và grid mờ tạo cảm giác không gian công nghệ
+        grid = NumberPlane(
+            x_range=[-7, 7, 1],
+            y_range=[-4, 4, 1],
+            background_line_style={
+                "stroke_color": BLUE_D,
+                "stroke_width": 1,
+                "stroke_opacity": 0.2
+            }
+        )
+        self.play(FadeIn(grid, run_time=1))
+
+        # 1. Xuất hiện Điểm đầu A (Giây thứ 20)
+        pointA = Dot(point=[-3, -1, 0], color=YELLOW, radius=0.12)
+        labelA = Tex("A", color=YELLOW).next_to(pointA, DOWN + LEFT, buff=0.2)
+        
+        self.play(Create(pointA), Write(labelA))
+        self.wait(0.5)
+
+        # 2. Xuất hiện Điểm cuối B 
+        pointB = Dot(point=[3, 2, 0], color=MATCH, radius=0.12)
+        labelB = Tex("B", color=WHITE).next_to(pointB, UP + RIGHT, buff=0.2)
+        
+        self.play(Create(pointB), Write(labelB))
+        self.wait(0.5)
+
+        # 3. Vẽ vectơ AB có mũi tên phát sáng (Giây thứ 25)
+        vector_ab = Arrow(
+            start=[-3, -1, 0], 
+            end=[3, 2, 0], 
+            buff=0.1, 
+            color=PURE_GREEN, 
+            stroke_width=6,
+            max_tip_length_to_length_ratio=0.15
+        )
+        
+        # Tạo hiệu ứng phát sáng mờ (Glow effect) cho chuẩn cinematic bằng cách đè thêm một nét dày hơn, mờ hơn
+        vector_glow = Arrow(
+            start=[-3, -1, 0], 
+            end=[3, 2, 0], 
+            buff=0.1, 
+            color=GREEN_A, 
+            stroke_width=12,
+            stroke_opacity=0.3
+        )
+
+        # Định nghĩa ký hiệu Vectơ AB
+        vector_label = MathTex(r"\vec{AB}", color=PURE_GREEN).scale(1.2)
+        vector_label.next_to(vector_ab.get_center(), UP + LEFT, buff=0.3)
+
+        # Chạy hiệu ứng vẽ vectơ và hiện chữ
+        self.play(
+            GrowArrow(vector_ab),
+            FadeIn(vector_glow),
+            Write(vector_label),
+            run_time=1.5
+        )
+        self.wait(1)
+
+        # 4. Hiển thị "thước đo ảo" biểu diễn độ dài (Độ lớn của vectơ)
+        # Tạo một đường viền (Brace) để đo khoảng cách
+        brace = Brace(vector_ab, direction=vector_ab.copy().rotate(PI/2).get_unit_vector(), buff=0.2, color=BLUE_A)
+        brace_text = brace.get_text("Độ dài (Độ lớn)").set_color(BLUE_A).scale(0.8)
+
+        self.play(
+            GrowFromCenter(brace),
+            FadeIn(brace_text, shift=UP*0.1),
+            run_time=1.5
+        )
+        self.wait(3)
+
+        # Thu dọn cảnh (Fade out) để chuyển sang cảnh tiếp theo
+        self.play(
+            FadeOut(grid),
+            FadeOut(pointA), FadeOut(labelA),
+            FadeOut(pointB), FadeOut(labelB),
+            FadeOut(vector_ab), FadeOut(vector_glow), FadeOut(vector_label),
+            FadeOut(brace), FadeOut(brace_text),
+            run_time=1.5
+        )
